@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\ProductsDataTable;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use Exception;
@@ -9,17 +10,35 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Category;
+use DataTables;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    // public function index(ProductsDataTable $dataTable)
+    // {
+    //     // $product = Product::with('category')->get();
+    //     // return view('product.index', ["title"=>"Product list", 'data' =>$product]);
+    //     return $dataTable->render('product.index');
+
+
+    // }
     public function index()
     {
-        $product = Product::with('category')->get();
-        return view('product.index', ["title"=>"Product list", 'data' =>$product]);
-
+        if(\request()->ajax()){
+            $data = Product::with('category:id,category_name');
+            return DataTables::of($data)
+                ->addIndexColumn()
+                // ->addColumn('action', function($row){
+                //     $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
+                //     return $actionBtn;
+                // })
+                // ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('product.index');
     }
 
     /**
@@ -73,7 +92,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ProductRequest $request, string $id)
     {
         $input = $request->all();
         $data = Product::where('id', $id)->first();
@@ -97,8 +116,10 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $data = Product::where('id', $id)->first();
+        $data->delete();
+        return redirect()->back()->with('success', 'Product Deleted');
     }
 }

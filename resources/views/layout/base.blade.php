@@ -1,3 +1,16 @@
-@include('layout.header')
-@yield('main-container')
-@include('layout.footer')
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    @include('layout.header')
+</head>
+
+<body>
+    @include('layout.nav')
+
+    @yield('main-container')
+
+    @include('layout.footer')
+</body>
+
+</html>

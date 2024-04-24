@@ -19,6 +19,9 @@ use App\Http\Controllers\ProductController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('dashboard', function () {
+    return view('welcome');
+});
 Route::get('signup',[AuthController::class, 'create'])->name('signup.create');
 Route::post('signup', [AuthController::class, 'store'])->name('signup.store');
 Route::get('login',[AuthController::class, 'index'])->name('login.index');
@@ -26,3 +29,7 @@ Route::post('login', [AuthController::class, 'login'])->name('login.login');
 // Route::post('dashbord', [AuthController::class, 'dashbord'])->name('dashbord');
 Route::resource('categories', CategoryController::class);
 Route::resource('products', ProductController::class);
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
